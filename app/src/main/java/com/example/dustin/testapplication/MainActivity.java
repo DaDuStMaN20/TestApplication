@@ -77,12 +77,23 @@ public class MainActivity extends AppCompatActivity {
                 if(i++ < resultAfterSplit.length && i-- > 0){
                     //search for "plus" "times" "divided by" "times"
 
+                    //Addition
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("plus") || resultAfterSplit[i].trim().equalsIgnoreCase("+")){
                         //form the equation
                         equation = equation.concat(resultAfterSplit[i-1] + "+" +resultAfterSplit[i+1]);
                         Log.println(Log.INFO, "result", "Equation = " + equation);
 
                     }
+
+                    //subtraction
+                    if(resultAfterSplit[i].trim().equalsIgnoreCase("minus") || resultAfterSplit[i].trim().equalsIgnoreCase("-")){
+                        //form the equation
+                        equation = equation.concat(resultAfterSplit[i-1] + "-" +resultAfterSplit[i+1]);
+                        Log.println(Log.INFO, "result", "Equation = " + equation);
+
+                    }
+
+
                 }
             }
 
