@@ -93,6 +93,29 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+                    //multiplication
+                    if(resultAfterSplit[i].trim().equalsIgnoreCase("times") || resultAfterSplit[i].trim().equalsIgnoreCase("*")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied by")){
+                        //form the equation
+                        equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
+                        Log.println(Log.INFO, "result", "Equation = " + equation);
+
+                    }
+
+                    //division
+
+                    //to percent
+
+                    //percent of
+
+                    //squared
+
+                    //cubed
+
+                    //sqrt
+
+
+
 
                 }
             }
@@ -109,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    //CONVERSIONS
+
+    //temperature F to C C to F
+
+    //PHONE FUNCTIONS
+
+    //call, dial, (etc) contact
 
 
 
