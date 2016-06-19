@@ -17,21 +17,21 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Push Me To Start Recognition"
         android:id="@+id/button"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:onClick="startRecognition" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="67dp"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Please look at code comments"
+        android:id="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
+
 </RelativeLayout>

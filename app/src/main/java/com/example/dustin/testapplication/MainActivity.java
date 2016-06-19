@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.println(Log.INFO, "result_"+ i, resultAfterSplit[i].trim());
             }
 
+            //CALL ALL MAJOR METHODS HERE (math(), conversion(), phone(), etc)
             math();
 
         }
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.println(Log.INFO, "result", "" + result);
                 TextView t = (TextView) findViewById(R.id.textView);
-                t.setText("The result of " + equation + " is " +result);
+                t.append("\nThe result of " + equation + " is " +result);
 
 
         }
