@@ -11,7 +11,10 @@ import android.widget.TextView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-
+/*
+    Google now recongition notes:
+        Saying "times" produces a "*", but saying multiplied by produces a "x"
+*/
 public class MainActivity extends AppCompatActivity {
 
     static final int check = 111;
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Starts Speech recognition processes. This will only be called from the application itself, not this code.
-     * @param view
+     * @param view Paramater passed into any method called from the application itself
      */
     public void startRecognition(View view){
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -134,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
                     //multiplication
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("times") || resultAfterSplit[i].trim().equalsIgnoreCase("*")
-                            || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied by")){
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied by")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("x")){
+                        //Google now recongition notes:
                         //form the equation
                         equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
                         Log.println(Log.INFO, "result", "Equation = " + equation);
@@ -160,14 +165,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //if the equation is not empty, evauluate it.
-            if(!equation.trim().equalsIgnoreCase(""))
+            if(!equation.trim().equalsIgnoreCase("")) {
                 exp = new Expression(equation);
                 result = exp.eval();
 
                 Log.println(Log.INFO, "result", "" + result);
                 TextView t = (TextView) findViewById(R.id.textView);
-                t.append("\nThe result of " + equation + " is " +result);
-
+                t.append("\nThe result of " + equation + " is " + result);
+            }
 
         }
     }
