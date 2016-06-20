@@ -15,6 +15,8 @@ import java.util.ArrayList;
     Google now recongition notes:
         Saying "times" produces a "*", but saying multiplied by produces a "x"
 */
+
+
 public class MainActivity extends AppCompatActivity {
 
     static final int check = 111;
@@ -23,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> results;      //results of voice recognition (from the recognizer itself)
                                     // *contains likely matches [0] being most likely
     String [] resultAfterSplit;     //result
-    Expression exp;
-    BigDecimal result;
+    Expression exp;                 //expression for the string to math expression
+    BigDecimal result;              //the result received by expression
+
 
 
 
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
             for(int i = 0; i < resultAfterSplit.length; i++){
                 Log.println(Log.INFO, "result_"+ i, resultAfterSplit[i]);
-                Log.println(Log.INFO, "result_"+ i, resultAfterSplit[i].trim());
+
             }
 
             //CALL ALL MAJOR METHODS HERE (math(), conversion(), phone(), etc)
@@ -129,20 +132,47 @@ public class MainActivity extends AppCompatActivity {
 
                     //subtraction
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("minus") || resultAfterSplit[i].trim().equalsIgnoreCase("-")){
-                        //form the equation
-                        equation = equation.concat(resultAfterSplit[i-1] + "-" +resultAfterSplit[i+1]);
-                        Log.println(Log.INFO, "result", "Equation = " + equation);
 
+                        //Checks to ensure that the things before and after the operand are numbers.
+                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i - 1] + "-" + resultAfterSplit[i + 1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
                     }
 
                     //multiplication
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("times") || resultAfterSplit[i].trim().equalsIgnoreCase("*")
                             || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied by")
                             || resultAfterSplit[i].trim().equalsIgnoreCase("x")){
-                        //Google now recongition notes:
-                        //form the equation
-                        equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
-                        Log.println(Log.INFO, "result", "Equation = " + equation);
+
+                        //Checks to ensure that the things before and after the operand are numbers.
+                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())){
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i-1
+                        if(!isNumeric(resultAfterSplit[i-1]) && isNumeric(resultAfterSplit[i+1]) &&
+                                (resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat(result + "*" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i+1
+                        if(!isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                                (resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat( resultAfterSplit[i-1]+ "*" + result);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+
+
 
                     }
 
@@ -175,6 +205,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+
+    //isNumeric retreived from http://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+
+    /**
+     * This checks a string to see if it is a number.
+     * @param str The string to check
+     * @return True if the string is a string. False if it is not.
+     */
+    public static boolean isNumeric(String str)
+    {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 
     //CONVERSIONS
