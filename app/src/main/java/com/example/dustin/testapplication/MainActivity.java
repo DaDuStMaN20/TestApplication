@@ -15,8 +15,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     static final int check = 111;
-    ArrayList<String> results;
-    String [] resultAfterSplit;
+
+
+    ArrayList<String> results;      //results of voice recognition (from the recognizer itself)
+                                    // *contains likely matches [0] being most likely
+    String [] resultAfterSplit;     //result
     Expression exp;
     BigDecimal result;
 
@@ -28,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    /**
+     * Starts Speech recognition processes. This will only be called from the application itself, not this code.
+     * @param view
+     */
     public void startRecognition(View view){
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -67,15 +74,46 @@ public class MainActivity extends AppCompatActivity {
 
     //NOTE: be sure to check for "search the web for" type expressions before checking for anything else.
 
-
+    /**
+     * Checks what was said to see if the user wants to complete a math problem, and completes it.
+     * It can currently detect the following: <br/>
+     * <table>
+     *     <caption>Current Recognizable Operations</caption>
+     *     <tr>
+     *         <th>Operand</th>
+     *         <th>Operation Performed</th>
+     *         <th>Phrases Recognized</th>
+     *     </tr>
+     *     <tr>
+     *         <td>+</td>
+     *         <td>Addition</td>
+     *         <td>"plus"</td>
+     *     </tr>
+     *     <tr>
+     *         <td>-</td>
+     *         <td>Subtraction</td>
+     *         <td>"minus"</td>
+     *     </tr>
+     *     <tr>
+     *         <td>*</td>
+     *         <td>Multiplication</td>
+     *         <td>"times", "multiplied by"</td>
+     *     </tr>
+     *
+     * </table>
+     */
     public void math(){
         String equation = "";
+
         //check to see if there has been anything said
         if(resultAfterSplit != null){
+
             //loop looking for math terms
             for(int i = 0; i < resultAfterSplit.length; i++){
+
                 //check to make sure i+1 isnt greater than or equal to the length and i-- is greater than 0
                 if(i++ < resultAfterSplit.length && i-- > 0){
+
                     //search for "plus" "times" "divided by" "times"
 
                     //Addition
