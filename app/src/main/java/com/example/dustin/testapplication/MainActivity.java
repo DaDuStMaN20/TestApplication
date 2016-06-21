@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /*
     Google now recongition notes:
@@ -27,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
     String [] resultAfterSplit;     //result
     Expression exp;                 //expression for the string to math expression
     BigDecimal result;              //the result received by expression
+
+    //for numeric words to numbers
+    public static final String[] DIGITS = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    public static final String[] TENS = {null, "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"};
+    public static final String[] TEENS = {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"};
+    public static final String[] MAGNITUDES = {"hundred", "thousand", "million", "point"};
+    public static final String[] ZERO = {"zero", "oh"};
 
 
 
@@ -139,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
                         else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
                                 !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
-                                (resultAfterSplit[i-1].trim().equals("this") ||
-                                        resultAfterSplit[i-1].trim().equals("that"))){
+                                resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that")){
                             //form the equation
                             equation = equation.concat(result + "+" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
@@ -149,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
                         //Using the last result as a parameter for i+1
                         else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
                                 !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
-                                (resultAfterSplit[i+1].trim().equals("this") ||
-                                        resultAfterSplit[i+1].trim().equals("that"))){
+                                resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that")){
                             //form the equation
                             equation = equation.concat( resultAfterSplit[i-1]+ "+" + result);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
@@ -163,20 +171,13 @@ public class MainActivity extends AppCompatActivity {
                     //subtraction
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("minus") || resultAfterSplit[i].trim().equalsIgnoreCase("-")){
 
-                        //Checks to ensure that the things before and after the operand are numbers.
-                        if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
-                                isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
-                            //form the equation
-                            equation = equation.concat(resultAfterSplit[i - 1] + "-" + resultAfterSplit[i + 1]);
-                            Log.println(Log.INFO, "result", "Equation = " + equation);
-                        }
 
                         //Using the last result as a parameter for i-1
-                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                        if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
                                 !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
-                                (resultAfterSplit[i-1].trim().equals("this") ||
-                                        resultAfterSplit[i-1].trim().equals("that"))){
+                                resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that")){
                             //form the equation
                             equation = equation.concat(result + "-" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
@@ -185,12 +186,21 @@ public class MainActivity extends AppCompatActivity {
                         //Using the last result as a parameter for i+1
                         else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
                                 !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
-                                (resultAfterSplit[i+1].trim().equals("this") ||
-                                        resultAfterSplit[i+1].trim().equals("that"))){
+                                resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that")){
                             //form the equation
                             equation = equation.concat( resultAfterSplit[i-1]+ "-" + result);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
+
+                        //Checks to ensure that the things before and after the operand are numbers.
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
+                                isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i - 1] + "-" + resultAfterSplit[i + 1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
 
 
                     }
@@ -213,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
                         else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
                                 !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
-                                (resultAfterSplit[i-1].trim().equals("this") ||
-                                        resultAfterSplit[i-1].trim().equals("that"))){
+                                resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that")){
                             //form the equation
                             equation = equation.concat(result + "*" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
@@ -277,7 +287,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public static boolean isNumeric(String str)
     {
-        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+        String str2 = replaceNumbers(str); //convert from word numbers to literal numbers
+        return str2.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 
     //CONVERSIONS
@@ -289,5 +300,129 @@ public class MainActivity extends AppCompatActivity {
     //call, dial, (etc) contact
 
 
+
+    //MAY THROW AN ERROR BECAUSE IT MAY NOT LIKE NON DIGIT NUMBERS
+    //retreived from http://stackoverflow.com/questions/4062022/how-to-convert-words-to-a-number
+    public static String replaceNumbers (String input) {
+        String result = "";
+        String[] decimal = input.split(MAGNITUDES[3]);
+        String[] millions = decimal[0].split(MAGNITUDES[2]);
+
+        for (int i = 0; i < millions.length; i++) {
+            String[] thousands = millions[i].split(MAGNITUDES[1]);
+
+            for (int j = 0; j < thousands.length; j++) {
+                int[] triplet = {0, 0, 0};
+                StringTokenizer set = new StringTokenizer(thousands[j]);
+
+                if (set.countTokens() == 1) { //If there is only one token given in triplet
+                    String uno = set.nextToken();
+                    triplet[0] = 0;
+                    for (int k = 0; k < DIGITS.length; k++) {
+                        if (uno.equals(DIGITS[k])) {
+                            triplet[1] = 0;
+                            triplet[2] = k + 1;
+                        }
+                        if (uno.equals(TENS[k])) {
+                            triplet[1] = k + 1;
+                            triplet[2] = 0;
+                        }
+                    }
+                }
+
+
+                else if (set.countTokens() == 2) {  //If there are two tokens given in triplet
+                    String uno = set.nextToken();
+                    String dos = set.nextToken();
+                    if (dos.equals(MAGNITUDES[0])) {  //If one of the two tokens is "hundred"
+                        for (int k = 0; k < DIGITS.length; k++) {
+                            if (uno.equals(DIGITS[k])) {
+                                triplet[0] = k + 1;
+                                triplet[1] = 0;
+                                triplet[2] = 0;
+                            }
+                        }
+                    }
+                    else {
+                        triplet[0] = 0;
+                        for (int k = 0; k < DIGITS.length; k++) {
+                            if (uno.equals(TENS[k])) {
+                                triplet[1] = k + 1;
+                            }
+                            if (dos.equals(DIGITS[k])) {
+                                triplet[2] = k + 1;
+                            }
+                        }
+                    }
+                }
+
+                else if (set.countTokens() == 3) {  //If there are three tokens given in triplet
+                    String uno = set.nextToken();
+                    String dos = set.nextToken();
+                    String tres = set.nextToken();
+                    for (int k = 0; k < DIGITS.length; k++) {
+                        if (uno.equals(DIGITS[k])) {
+                            triplet[0] = k + 1;
+                        }
+                        if (tres.equals(DIGITS[k])) {
+                            triplet[1] = 0;
+                            triplet[2] = k + 1;
+                        }
+                        if (tres.equals(TENS[k])) {
+                            triplet[1] = k + 1;
+                            triplet[2] = 0;
+                        }
+                    }
+                }
+
+                else if (set.countTokens() == 4) {  //If there are four tokens given in triplet
+                    String uno = set.nextToken();
+                    String dos = set.nextToken();
+                    String tres = set.nextToken();
+                    String cuatro = set.nextToken();
+                    for (int k = 0; k < DIGITS.length; k++) {
+                        if (uno.equals(DIGITS[k])) {
+                            triplet[0] = k + 1;
+                        }
+                        if (cuatro.equals(DIGITS[k])) {
+                            triplet[2] = k + 1;
+                        }
+                        if (tres.equals(TENS[k])) {
+                            triplet[1] = k + 1;
+                        }
+                    }
+                }
+                else {
+                    triplet[0] = 0;
+                    triplet[1] = 0;
+                    triplet[2] = 0;
+                }
+
+                result = result + Integer.toString(triplet[0]) + Integer.toString(triplet[1]) + Integer.toString(triplet[2]);
+            }
+        }
+
+        if (decimal.length > 1) {  //The number is a decimal
+            StringTokenizer decimalDigits = new StringTokenizer(decimal[1]);
+            result = result + ".";
+            System.out.println(decimalDigits.countTokens() + " decimal digits");
+            while (decimalDigits.hasMoreTokens()) {
+                String w = decimalDigits.nextToken();
+                System.out.println(w);
+
+                if (w.equals(ZERO[0]) || w.equals(ZERO[1])) {
+                    result = result + "0";
+                }
+                for (int j = 0; j < DIGITS.length; j++) {
+                    if (w.equals(DIGITS[j])) {
+                        result = result + Integer.toString(j + 1);
+                    }
+                }
+
+            }
+        }
+
+        return result;
+    }
 
 }
