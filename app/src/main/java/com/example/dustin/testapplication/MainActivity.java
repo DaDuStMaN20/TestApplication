@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
      *     </tr>
      *
      * </table>
+     *
+     *
      */
     public void math(){
         String equation = "";
@@ -124,9 +126,33 @@ public class MainActivity extends AppCompatActivity {
 
                     //Addition
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("plus") || resultAfterSplit[i].trim().equalsIgnoreCase("+")){
-                        //form the equation
-                        equation = equation.concat(resultAfterSplit[i-1] + "+" +resultAfterSplit[i+1]);
-                        Log.println(Log.INFO, "result", "Equation = " + equation);
+                        //Checks to ensure that the things before and after the operand are numbers.
+                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i - 1] + "+" + resultAfterSplit[i + 1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i-1
+                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                                isNumeric(resultAfterSplit[i+1]) &&
+                                (resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat(result + "+" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i+1
+                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                                (resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat( resultAfterSplit[i-1]+ "+" + result);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+
 
                     }
 
@@ -139,6 +165,27 @@ public class MainActivity extends AppCompatActivity {
                             equation = equation.concat(resultAfterSplit[i - 1] + "-" + resultAfterSplit[i + 1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
+
+                        //Using the last result as a parameter for i-1
+                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                                isNumeric(resultAfterSplit[i+1]) &&
+                                (resultAfterSplit[i-1].trim().equals("this") ||
+                                        resultAfterSplit[i-1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat(result + "-" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i+1
+                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                                (resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat( resultAfterSplit[i-1]+ "-" + result);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+
                     }
 
                     //multiplication
@@ -154,7 +201,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //Using the last result as a parameter for i-1
-                        if(!isNumeric(resultAfterSplit[i-1]) && isNumeric(resultAfterSplit[i+1]) &&
+                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                                isNumeric(resultAfterSplit[i+1]) &&
                                 (resultAfterSplit[i-1].trim().equals("this") ||
                                         resultAfterSplit[i-1].trim().equals("that"))){
                             //form the equation
@@ -163,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //Using the last result as a parameter for i+1
-                        if(!isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
                                 (resultAfterSplit[i+1].trim().equals("this") ||
                                         resultAfterSplit[i+1].trim().equals("that"))){
                             //form the equation
@@ -202,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.println(Log.INFO, "result", "" + result);
                 TextView t = (TextView) findViewById(R.id.textView);
                 t.append("\nThe result of " + equation + " is " + result);
+
             }
 
         }
