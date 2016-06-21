@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //multiplication
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("times") || resultAfterSplit[i].trim().equalsIgnoreCase("*")
-                            || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied by")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("multiplied") //multiplied by
                             || resultAfterSplit[i].trim().equalsIgnoreCase("x")){
 
                         //Checks to ensure that the things before and after the operand are numbers.
@@ -247,9 +247,11 @@ public class MainActivity extends AppCompatActivity {
 
                     //division
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("÷")
-                            || resultAfterSplit[i].trim().equalsIgnoreCase("divided by")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("/")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("divided") //divided by
                             || resultAfterSplit[i].trim().equalsIgnoreCase("over")
-                            || resultAfterSplit[i].trim().equalsIgnoreCase("out of")){
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("out")) //Out = out of
+                    {
 
                         //Checks to ensure that the things before and after the operand are numbers.
                         if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
@@ -286,7 +288,24 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     //to percent
+                    if((resultAfterSplit[i].trim().equalsIgnoreCase("to") &&
+                            resultAfterSplit[i+1].trim().equalsIgnoreCase("percent"))
+                        || (resultAfterSplit[i].trim().equalsIgnoreCase("in") &&
+                            resultAfterSplit[i+1].trim().equalsIgnoreCase("percent"))){
 
+                        if(i-1 >= 0 && isNumeric(resultAfterSplit[i-1].trim())) {
+                            equation = equation.concat(resultAfterSplit[i - 1] + "*100");
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+                        else if(i-1 >= 0 && result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                                resultAfterSplit[i-1].trim().equalsIgnoreCase("this") ||
+                                resultAfterSplit[i-1].trim().equalsIgnoreCase("that")){
+                            equation = equation.concat(result + "*100");
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+
+                    }
                     //percent of
 
                     //squared
