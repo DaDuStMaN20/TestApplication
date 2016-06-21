@@ -127,14 +127,17 @@ public class MainActivity extends AppCompatActivity {
                     //Addition
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("plus") || resultAfterSplit[i].trim().equalsIgnoreCase("+")){
                         //Checks to ensure that the things before and after the operand are numbers.
-                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
+                        if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
+                                isNumeric(resultAfterSplit[i-1].trim()) &&
+                                isNumeric(resultAfterSplit[i+1].trim())) {
                             //form the equation
                             equation = equation.concat(resultAfterSplit[i - 1] + "+" + resultAfterSplit[i + 1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
 
                         //Using the last result as a parameter for i-1
-                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
                                 (resultAfterSplit[i-1].trim().equals("this") ||
                                         resultAfterSplit[i-1].trim().equals("that"))){
@@ -144,7 +147,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //Using the last result as a parameter for i+1
-                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
                                 (resultAfterSplit[i+1].trim().equals("this") ||
                                         resultAfterSplit[i+1].trim().equals("that"))){
                             //form the equation
@@ -160,14 +164,16 @@ public class MainActivity extends AppCompatActivity {
                     if(resultAfterSplit[i].trim().equalsIgnoreCase("minus") || resultAfterSplit[i].trim().equalsIgnoreCase("-")){
 
                         //Checks to ensure that the things before and after the operand are numbers.
-                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
+                        if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
+                                isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())) {
                             //form the equation
                             equation = equation.concat(resultAfterSplit[i - 1] + "-" + resultAfterSplit[i + 1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
 
                         //Using the last result as a parameter for i-1
-                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
                                 (resultAfterSplit[i-1].trim().equals("this") ||
                                         resultAfterSplit[i-1].trim().equals("that"))){
@@ -177,7 +183,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //Using the last result as a parameter for i+1
-                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
                                 (resultAfterSplit[i+1].trim().equals("this") ||
                                         resultAfterSplit[i+1].trim().equals("that"))){
                             //form the equation
@@ -194,14 +201,17 @@ public class MainActivity extends AppCompatActivity {
                             || resultAfterSplit[i].trim().equalsIgnoreCase("x")){
 
                         //Checks to ensure that the things before and after the operand are numbers.
-                        if(isNumeric(resultAfterSplit[i-1].trim()) && isNumeric(resultAfterSplit[i+1].trim())){
+                        if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
+                                isNumeric(resultAfterSplit[i-1].trim()) &&
+                                isNumeric(resultAfterSplit[i+1].trim())){
                             //form the equation
                             equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
 
                         //Using the last result as a parameter for i-1
-                        else if(result != null && !isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i-1]) &&
                                 isNumeric(resultAfterSplit[i+1]) &&
                                 (resultAfterSplit[i-1].trim().equals("this") ||
                                         resultAfterSplit[i-1].trim().equals("that"))){
@@ -211,7 +221,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //Using the last result as a parameter for i+1
-                        else if(result != null && !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
                                 (resultAfterSplit[i+1].trim().equals("this") ||
                                         resultAfterSplit[i+1].trim().equals("that"))){
                             //form the equation
