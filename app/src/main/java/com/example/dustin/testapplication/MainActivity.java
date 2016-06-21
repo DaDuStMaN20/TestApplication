@@ -246,7 +246,45 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     //division
+                    if(resultAfterSplit[i].trim().equalsIgnoreCase("÷")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("divided by")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("over")
+                            || resultAfterSplit[i].trim().equalsIgnoreCase("out of")){
 
+                        //Checks to ensure that the things before and after the operand are numbers.
+                        if(i-1 >= 0 && i+1 < resultAfterSplit.length &&
+                                isNumeric(resultAfterSplit[i-1].trim()) &&
+                                isNumeric(resultAfterSplit[i+1].trim())){
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i-1] + "/" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i-1
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i-1]) &&
+                                isNumeric(resultAfterSplit[i+1]) &&
+                                resultAfterSplit[i-1].trim().equals("this") ||
+                                resultAfterSplit[i-1].trim().equals("that")){
+                            //form the equation
+                            equation = equation.concat(result + "/" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+                        //Using the last result as a parameter for i+1
+                        else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
+                                !isNumeric(resultAfterSplit[i+1]) && isNumeric(resultAfterSplit[i-1]) &&
+                                (resultAfterSplit[i+1].trim().equals("this") ||
+                                        resultAfterSplit[i+1].trim().equals("that"))){
+                            //form the equation
+                            equation = equation.concat( resultAfterSplit[i-1]+ "/" + result);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+
+
+
+
+                    }
                     //to percent
 
                     //percent of
