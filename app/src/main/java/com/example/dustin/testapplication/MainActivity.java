@@ -218,6 +218,13 @@ public class MainActivity extends AppCompatActivity {
                             equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
+                        //Ensures that multiplied by will result in multiplication
+                        else if(i-1 >= 0 && i+2 < resultAfterSplit.length && isNumeric(resultAfterSplit[i-1].trim()) &&
+                                isNumeric(resultAfterSplit[i+2].trim())){
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i-1] + "*" +resultAfterSplit[i+2]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
 
                         //Using the last result as a parameter for i-1
                         else if(i-1 >= 0 && i+1 < resultAfterSplit.length && result != null &&
@@ -259,6 +266,13 @@ public class MainActivity extends AppCompatActivity {
                                 isNumeric(resultAfterSplit[i+1].trim())){
                             //form the equation
                             equation = equation.concat(resultAfterSplit[i-1] + "/" +resultAfterSplit[i+1]);
+                            Log.println(Log.INFO, "result", "Equation = " + equation);
+                        }
+                        //This checks to see if it was 2 words that was said (EX: divided, by) and ensures that they are numbers on both sides
+                        else if(i-1 >= 0 && i+2 < resultAfterSplit.length && isNumeric(resultAfterSplit[i-1].trim()) &&
+                                isNumeric(resultAfterSplit[i+2].trim())){
+                            //form the equation
+                            equation = equation.concat(resultAfterSplit[i-1] + "/" +resultAfterSplit[i+2]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
 
