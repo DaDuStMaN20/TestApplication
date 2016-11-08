@@ -1,19 +1,25 @@
 package com.example.dustin.testapplication;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.speech.*;
 import android.content.Intent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /*
-    Google now recongition notes:
+    Google now recognition notes:
         Saying "times" produces a "*", but saying multiplied by produces a "x"
 */
 
@@ -21,6 +27,18 @@ import java.util.StringTokenizer;
 public class MainActivity extends AppCompatActivity {
 
     static final int check = 111;
+
+    AudioManager manager;
+    public static final String CMDTOGGLEPAUSE = "togglepause";
+    public static final String CMDPAUSE = "pause";
+    public static final String CMDPREVIOUS = "previous";
+    public static final String CMDNEXT = "next";
+    public static final String SERVICECMD = "com.android.music.musicservicecommand";
+    public static final String CMDNAME = "command";
+    public static final String CMDSTOP = "stop";
+
+
+
 
 
     ArrayList<String> results;      //results of voice recognition (from the recognizer itself)
@@ -43,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     }
 
     /**
@@ -53,14 +73,20 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, "");
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speek up son!");
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "How can I help?");
         startActivityForResult(i, check);
 
 
     }
 
+    public void start(View view){
+        startActivityForResult(new Intent(this, MainActivity.class), check);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
+
 
         if(requestCode == check && resultCode == RESULT_OK){
 
@@ -72,17 +98,23 @@ public class MainActivity extends AppCompatActivity {
             String resultBeforeSplit = results.get(0);
             resultAfterSplit = resultBeforeSplit.split(" ", 25);
 
+            EditText text = (EditText)findViewById(R.id.editText);
+
+            resultBeforeSplit = text.getText().toString();
+            resultAfterSplit = resultBeforeSplit.split(" ", 25);
+
             for(int i = 0; i < resultAfterSplit.length; i++){
                 Log.println(Log.INFO, "result_"+ i, resultAfterSplit[i]);
 
             }
 
-            //CALL ALL MAJOR METHODS HERE (math(), conversion(), phone(), etc)
-            math();
+
 
         }
 
-
+        //CALL ALL MAJOR METHODS HERE (math(), conversion(), phone(), etc)
+        math();
+        music();
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -90,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     //NOTE: be sure to check for "search the web for" type expressions before checking for anything else.
 
     /**
-     * Checks what was said to see if the user wants to complete a math problem, and completes it.
+     * Checks what was said to see if(the user wants to complete a math problem, and completes it.
      * It can currently detect the following: <br/>
      * <table>
      *     <caption>Current Recognizable Operations</caption>
@@ -122,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     public void math(){
         String equation = "";
 
-        //check to see if there has been anything said
+        //check to see if(there has been anything said
         if(resultAfterSplit != null){
 
             //loop looking for math terms
@@ -269,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
                             equation = equation.concat(resultAfterSplit[i-1] + "/" +resultAfterSplit[i+1]);
                             Log.println(Log.INFO, "result", "Equation = " + equation);
                         }
-                        //This checks to see if it was 2 words that was said (EX: divided, by) and ensures that they are numbers on both sides
+                        //This checks to see if(it was 2 words that was said (EX: divided, by) and ensures that they are numbers on both sides
                         else if(i-1 >= 0 && i+2 < resultAfterSplit.length && isNumeric(resultAfterSplit[i-1].trim()) &&
                                 isNumeric(resultAfterSplit[i+2].trim())){
                             //form the equation
@@ -335,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            //if the equation is not empty, evauluate it.
+            //if(the equation is not empty, evaluate it.
             if(!equation.trim().equalsIgnoreCase("")) {
                 exp = new Expression(equation);
                 result = exp.eval();
@@ -349,13 +381,181 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void pause(){
+        long eventtime = SystemClock.uptimeMillis();
+        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent downEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE, 0);
+        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+        sendOrderedBroadcast(downIntent, null);
 
-    //isNumeric retreived from http://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent upEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE, 0);
+        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+        sendOrderedBroadcast(upIntent, null);
+    }
+
+    public void play(){
+        long eventtime = SystemClock.uptimeMillis();
+        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent downEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY, 0);
+        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+        sendOrderedBroadcast(downIntent, null);
+
+        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent upEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY, 0);
+        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+        sendOrderedBroadcast(upIntent, null);
+    }
+
+    public void next(){
+        long eventtime = SystemClock.uptimeMillis();
+        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent downEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+        sendOrderedBroadcast(downIntent, null);
+
+        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent upEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+        sendOrderedBroadcast(upIntent, null);
+    }
+
+    public void previous(){
+        long eventtime = SystemClock.uptimeMillis();
+        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent downEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+        sendOrderedBroadcast(downIntent, null);
+
+        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent upEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+        sendOrderedBroadcast(upIntent, null);
+    }
+
+    public void beginning(){
+        long eventtime = SystemClock.uptimeMillis();
+        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent downEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_SKIP_BACKWARD, 0);
+        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+        sendOrderedBroadcast(downIntent, null);
+
+        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+        KeyEvent upEvent = new KeyEvent(eventtime, eventtime,
+                KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_SKIP_BACKWARD, 0);
+        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+        sendOrderedBroadcast(upIntent, null);
+    }
+
+
+
+    public void music(){
+        if(manager.isMusicActive()) {
+            pause();
+        }
+
+        if(resultAfterSplit != null) {
+
+            //loop looking for math terms
+            for (int i = 0; i < resultAfterSplit.length; i++) {
+
+                if(resultAfterSplit[i].equals("pause")){
+                    if(manager.isMusicActive()) {
+
+                        pause();
+                    }
+                }
+
+
+                //shuffle
+                if(i+3 < resultAfterSplit.length){
+                    if((resultAfterSplit[i].equals("shuffle")) || (resultAfterSplit[i].equals("shuffle") && resultAfterSplit[i+1].equals("my") &&
+                            resultAfterSplit[i+2].equals("music")) || (resultAfterSplit[i].equals("play") && resultAfterSplit[i+1].equals("my")) &&
+                            resultAfterSplit[i+2].equals("music") && resultAfterSplit[i+3].equals("shuffled")){
+                        if(manager.isMusicActive()) {
+                            //simulate a shuffle by skipping 5 songs
+
+                            next();
+                            next();
+                            next();
+                            next();
+                            next();
+
+
+                        }
+                        else {
+                            //simulate a shuffle by skipping 5 songs
+
+                            next();
+                            next();
+                            next();
+                            next();
+                            next();
+                            play();
+                        }
+                    }
+                }
+
+
+                //play
+                if(resultAfterSplit[i].equals("play")){
+                    //check to see if(music is playing to begin with
+                    if(manager.isMusicActive()) {
+
+                        play();
+                    }
+                }
+
+                //ADD RECOGNIZABLE WORDS!!!
+
+                //previous
+                if(resultAfterSplit[i].equals("previous")){
+                    //check to see if(music is playing to begin with
+                    if(manager.isMusicActive()) {
+
+                        previous();
+                    }
+                }
+
+                //next
+                if(resultAfterSplit[i].equals("next")){
+                    //check to see if(music is playing to begin with
+                    if(manager.isMusicActive()) {
+
+                        next();
+                    }
+                }
+
+
+                //start over
+                if(resultAfterSplit[i].equals("beginning")){
+                    //check to see if(music is playing to begin with
+                    if(manager.isMusicActive()) {
+
+                        beginning();
+                    }
+                }
+
+
+            }
+        }
+
+    }
+    //isNumeric retrieved from http://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
 
     /**
-     * This checks a string to see if it is a number.
+     * This checks a string to see if(it is a number.
      * @param str The string to check
-     * @return True if the string is a string. False if it is not.
+     * @return True if(the string is a string. False if(it is not.
      */
     public static boolean isNumeric(String str)
     {
@@ -374,7 +574,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //MAY THROW AN ERROR BECAUSE IT MAY NOT LIKE NON DIGIT NUMBERS
-    //retreived from http://stackoverflow.com/questions/4062022/how-to-convert-words-to-a-number
+    //retrieved from http://stackoverflow.com/questions/4062022/how-to-convert-words-to-a-number
     public static String replaceNumbers (String input) {
         String result = "";
         String[] decimal = input.split(MAGNITUDES[3]);
@@ -387,15 +587,15 @@ public class MainActivity extends AppCompatActivity {
                 int[] triplet = {0, 0, 0};
                 StringTokenizer set = new StringTokenizer(thousands[j]);
 
-                if (set.countTokens() == 1) { //If there is only one token given in triplet
+                if((set.countTokens() == 1)) { //If there is only one token given in triplet
                     String uno = set.nextToken();
                     triplet[0] = 0;
                     for (int k = 0; k < DIGITS.length; k++) {
-                        if (uno.equals(DIGITS[k])) {
+                        if((uno.equals(DIGITS[k]))) {
                             triplet[1] = 0;
                             triplet[2] = k + 1;
                         }
-                        if (uno.equals(TENS[k])) {
+                        if((uno.equals(TENS[k]))) {
                             triplet[1] = k + 1;
                             triplet[2] = 0;
                         }
@@ -403,12 +603,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                else if (set.countTokens() == 2) {  //If there are two tokens given in triplet
+                else if((set.countTokens() == 2)) {  //If there are two tokens given in triplet
                     String uno = set.nextToken();
                     String dos = set.nextToken();
-                    if (dos.equals(MAGNITUDES[0])) {  //If one of the two tokens is "hundred"
+                    if((dos.equals(MAGNITUDES[0]))) {  //If one of the two tokens is "hundred"
                         for (int k = 0; k < DIGITS.length; k++) {
-                            if (uno.equals(DIGITS[k])) {
+                            if((uno.equals(DIGITS[k]))) {
                                 triplet[0] = k + 1;
                                 triplet[1] = 0;
                                 triplet[2] = 0;
@@ -418,48 +618,48 @@ public class MainActivity extends AppCompatActivity {
                     else {
                         triplet[0] = 0;
                         for (int k = 0; k < DIGITS.length; k++) {
-                            if (uno.equals(TENS[k])) {
+                            if((uno.equals(TENS[k]))) {
                                 triplet[1] = k + 1;
                             }
-                            if (dos.equals(DIGITS[k])) {
+                            if((dos.equals(DIGITS[k]))) {
                                 triplet[2] = k + 1;
                             }
                         }
                     }
                 }
 
-                else if (set.countTokens() == 3) {  //If there are three tokens given in triplet
+                else if((set.countTokens() == 3)) {  //If there are three tokens given in triplet
                     String uno = set.nextToken();
                     String dos = set.nextToken();
                     String tres = set.nextToken();
                     for (int k = 0; k < DIGITS.length; k++) {
-                        if (uno.equals(DIGITS[k])) {
+                        if((uno.equals(DIGITS[k]))) {
                             triplet[0] = k + 1;
                         }
-                        if (tres.equals(DIGITS[k])) {
+                        if((tres.equals(DIGITS[k]))) {
                             triplet[1] = 0;
                             triplet[2] = k + 1;
                         }
-                        if (tres.equals(TENS[k])) {
+                        if((tres.equals(TENS[k]))) {
                             triplet[1] = k + 1;
                             triplet[2] = 0;
                         }
                     }
                 }
 
-                else if (set.countTokens() == 4) {  //If there are four tokens given in triplet
+                else if((set.countTokens() == 4)) {  //If there are four tokens given in triplet
                     String uno = set.nextToken();
                     String dos = set.nextToken();
                     String tres = set.nextToken();
                     String cuatro = set.nextToken();
                     for (int k = 0; k < DIGITS.length; k++) {
-                        if (uno.equals(DIGITS[k])) {
+                        if((uno.equals(DIGITS[k]))) {
                             triplet[0] = k + 1;
                         }
-                        if (cuatro.equals(DIGITS[k])) {
+                        if((cuatro.equals(DIGITS[k]))) {
                             triplet[2] = k + 1;
                         }
-                        if (tres.equals(TENS[k])) {
+                        if((tres.equals(TENS[k]))) {
                             triplet[1] = k + 1;
                         }
                     }
@@ -474,7 +674,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (decimal.length > 1) {  //The number is a decimal
+        if((decimal.length > 1)) {  //The number is a decimal
             StringTokenizer decimalDigits = new StringTokenizer(decimal[1]);
             result = result + ".";
             System.out.println(decimalDigits.countTokens() + " decimal digits");
@@ -482,11 +682,11 @@ public class MainActivity extends AppCompatActivity {
                 String w = decimalDigits.nextToken();
                 System.out.println(w);
 
-                if (w.equals(ZERO[0]) || w.equals(ZERO[1])) {
+                if((w.equals(ZERO[0]) || w.equals(ZERO[1]))) {
                     result = result + "0";
                 }
                 for (int j = 0; j < DIGITS.length; j++) {
-                    if (w.equals(DIGITS[j])) {
+                    if((w.equals(DIGITS[j]))) {
                         result = result + Integer.toString(j + 1);
                     }
                 }

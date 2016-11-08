@@ -27,7 +27,7 @@
         android:layout_marginBottom="95dp" />
 
     <TextView
-        android:text="Welcome To Iris! Press the button to talk to me!"
+        android:text="Welcome To Iris!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -43,5 +43,27 @@
         android:id="@+id/textView2"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Query"
+        android:ems="10"
+        android:layout_above="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="73dp"
+        android:id="@+id/editText"
+        android:hint="Query" />
+
+    <Button
+        android:text="Go"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
+        android:id="@+id/button2"
+        android:onClick="start" />
 
 </RelativeLayout>
