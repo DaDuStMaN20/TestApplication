@@ -560,13 +560,7 @@ public class MainActivity extends AppCompatActivity {
         return str2.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 
-    //CONVERSIONS
 
-    //temperature F to C C to F
-
-    //PHONE FUNCTIONS
-
-    //call, dial, (etc) contact
 
 
 
