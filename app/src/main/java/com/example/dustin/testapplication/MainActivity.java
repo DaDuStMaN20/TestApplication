@@ -29,17 +29,6 @@ public class MainActivity extends AppCompatActivity {
     static final int check = 111;
 
     AudioManager manager;
-    public static final String CMDTOGGLEPAUSE = "togglepause";
-    public static final String CMDPAUSE = "pause";
-    public static final String CMDPREVIOUS = "previous";
-    public static final String CMDNEXT = "next";
-    public static final String SERVICECMD = "com.android.music.musicservicecommand";
-    public static final String CMDNAME = "command";
-    public static final String CMDSTOP = "stop";
-
-
-
-
 
     ArrayList<String> results;      //results of voice recognition (from the recognizer itself)
                                     // *contains likely matches [0] being most likely
