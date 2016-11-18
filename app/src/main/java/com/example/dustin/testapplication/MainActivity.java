@@ -59,12 +59,23 @@ public class MainActivity extends AppCompatActivity {
      * @param view Paramater passed into any method called from the application itself
      */
     public void startRecognition(View view){
+        if(manager.isMusicActive()) {
+            pause();
+
+            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            i.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, "");
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "How can I help?");
+            startActivityForResult(i, check);
+
+            play();
+        }
+
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, "");
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         i.putExtra(RecognizerIntent.EXTRA_PROMPT, "How can I help?");
         startActivityForResult(i, check);
-
 
     }
 
@@ -448,9 +459,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void music(){
-        if(manager.isMusicActive()) {
-            pause();
-        }
 
         if(resultAfterSplit != null) {
 
