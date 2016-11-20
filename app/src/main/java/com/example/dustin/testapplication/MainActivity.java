@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
             String resultBeforeSplit = results.get(0);
             resultAfterSplit = resultBeforeSplit.split(" ", 25);
 
-            EditText text = (EditText)findViewById(R.id.editText);
 
-            resultBeforeSplit = text.getText().toString();
+
+
             resultAfterSplit = resultBeforeSplit.split(" ", 25);
 
             for(int i = 0; i < resultAfterSplit.length; i++){
